@@ -37,7 +37,7 @@ export const courses: Course[] = [
     category: 'DeFi',
     duration: '3 hours',
     modules: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1642790551116-18e4f8f6c637?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=300&fit=crop',
     level: 'Advanced'
   },
   {

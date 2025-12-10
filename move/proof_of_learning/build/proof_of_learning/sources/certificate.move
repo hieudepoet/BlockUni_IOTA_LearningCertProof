@@ -1,21 +1,23 @@
 /// Module: proof_of_learning
 /// This module implements the Proof of Learning Ledger - a certificate NFT system
 /// that mints NFT badges when learners complete courses.
+#[allow(duplicate_alias)]
 module proof_of_learning::certificate {
     use std::string::{Self, String};
     use iota::event;
     use iota::package;
     use iota::display;
+    use iota::transfer;
+    use iota::object::{Self, UID};
+    use iota::tx_context::{Self, TxContext};
 
     /// Error codes
     const ENotAllModulesCompleted: u64 = 0;
     const EModuleAlreadyCompleted: u64 = 1;
     const EInvalidModuleId: u64 = 2;
-    const ECourseNotFound: u64 = 3;
 
     /// One-time witness for the certificate module
     public struct CERTIFICATE has drop {}
-
     /// Certificate NFT - the badge that proves course completion
     public struct CourseCertificate has key, store {
         id: UID,
