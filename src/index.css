@@ -1,0 +1,1155 @@
+/* ===== CSS Reset & Variables ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Color Palette - IOTA Inspired */
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --secondary-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  --accent-gradient: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+  --dark-gradient: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --accent-color: #38ef7d;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+
+  --bg-dark: #0a0a0f;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-glass: rgba(255, 255, 255, 0.08);
+  --border-glass: rgba(255, 255, 255, 0.12);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shadows */
+  --shadow-glow: 0 0 40px rgba(102, 126, 234, 0.3);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ===== Global Styles ===== */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Typography ===== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-color);
+}
+
+/* ===== Layout Components ===== */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.page {
+  flex: 1;
+  padding: var(--space-2xl) 0;
+}
+
+/* ===== Glass Card Style ===== */
+.glass-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition-normal);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-elevated), var(--shadow-glow);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+/* ===== Button Styles ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary-gradient);
+  color: white;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  border: 1px solid var(--border-glass);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--primary-color);
+}
+
+.btn-success {
+  background: var(--secondary-gradient);
+  color: #0a0a0f;
+  box-shadow: 0 4px 20px rgba(56, 239, 125, 0.4);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(56, 239, 125, 0.6);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-lg {
+  padding: var(--space-lg) var(--space-2xl);
+  font-size: 1.125rem;
+}
+
+.btn-sm {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.875rem;
+}
+
+/* ===== Header/Navigation ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--text-primary);
+  background: var(--bg-glass);
+}
+
+/* ===== Course Grid ===== */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.course-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.course-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: var(--transition-normal);
+}
+
+.course-card:hover::before {
+  transform: scaleX(1);
+}
+
+.course-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+}
+
+.course-badge {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-full);
+  color: white;
+}
+
+.course-title {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
+}
+
+.course-description {
+  font-size: 0.9rem;
+  margin-bottom: var(--space-md);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.course-meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* ===== Learning Progress ===== */
+.progress-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.progress-header {
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+}
+
+.progress-header h1 {
+  margin-bottom: var(--space-md);
+}
+
+.modules-grid {
+  display: grid;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.module-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  transition: var(--transition-normal);
+}
+
+.module-card.completed {
+  border-color: var(--success-color);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.module-number {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  transition: var(--transition-normal);
+}
+
+.module-card.completed .module-number {
+  background: var(--secondary-gradient);
+  color: #0a0a0f;
+}
+
+.module-content {
+  flex: 1;
+}
+
+.module-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.module-status {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.module-card.completed .module-status {
+  color: var(--success-color);
+}
+
+.module-action {
+  flex-shrink: 0;
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar-container {
+  margin-bottom: var(--space-2xl);
+}
+
+.progress-bar-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+  font-size: 0.9rem;
+}
+
+.progress-bar {
+  height: 12px;
+  background: var(--bg-glass);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+}
+
+/* ===== Certificate Badge ===== */
+.certificate-section {
+  text-align: center;
+  padding: var(--space-3xl);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+}
+
+.certificate-badge {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto var(--space-xl);
+  background: var(--primary-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 60px rgba(102, 126, 234, 0.5);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 40px rgba(102, 126, 234, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 80px rgba(102, 126, 234, 0.8);
+  }
+}
+
+.certificate-icon {
+  font-size: 5rem;
+}
+
+.certificate-title {
+  font-size: 1.75rem;
+  margin-bottom: var(--space-md);
+  background: var(--secondary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.certificate-message {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+/* ===== My Certificates Page ===== */
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.certificate-card {
+  text-align: center;
+  padding: var(--space-xl);
+}
+
+.certificate-card-badge {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto var(--space-lg);
+  background: var(--primary-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  text-align: center;
+  padding: var(--space-3xl) 0;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero h1 {
+  margin-bottom: var(--space-lg);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto var(--space-2xl);
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3xl);
+  margin-top: var(--space-3xl);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* ===== Wallet Connect ===== */
+.wallet-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.wallet-address {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* ===== Loading States ===== */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--bg-glass);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ===== Toast Notifications ===== */
+.toast {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  box-shadow: var(--shadow-elevated);
+  animation: slideIn 0.3s ease;
+  z-index: 1000;
+}
+
+.toast-success {
+  border-color: var(--success-color);
+}
+
+.toast-error {
+  border-color: var(--error-color);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: var(--space-3xl);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+}
+
+.empty-state-description {
+  color: var(--text-muted);
+  margin-bottom: var(--space-xl);
+}
+
+/* ===== Section Headers ===== */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+}
+
+.section-title {
+  font-size: 1.75rem;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    height: auto;
+    padding: var(--space-md) 0;
+    gap: var(--space-md);
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-stats {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .module-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .module-action {
+    width: 100%;
+  }
+
+  .module-action .btn {
+    width: 100%;
+  }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.fade-in-delay-1 {
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.fade-in-delay-2 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.fade-in-delay-3 {
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.fade-in-delay-4 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-glass);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== NFT Certificate Display ===== */
+.nft-display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xl);
+  padding: var(--space-2xl);
+}
+
+.nft-badge-wrapper {
+  position: relative;
+  width: 280px;
+  height: 280px;
+}
+
+.nft-badge-glow {
+  position: absolute;
+  inset: -20px;
+  background: var(--primary-gradient);
+  filter: blur(40px);
+  opacity: 0.6;
+  border-radius: 50%;
+  animation: nft-glow 3s ease-in-out infinite;
+}
+
+@keyframes nft-glow {
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.nft-badge-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--dark-gradient);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: var(--transition-normal);
+}
+
+.nft-badge-card:hover {
+  transform: rotateY(5deg) rotateX(5deg);
+  border-color: var(--primary-color);
+}
+
+.nft-badge-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
+.nft-badge-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-md);
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+  text-align: center;
+}
+
+.nft-badge-course {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nft-badge-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+  animation: nft-shine 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes nft-shine {
+
+  0%,
+  100% {
+    left: -100%;
+  }
+
+  50% {
+    left: 150%;
+  }
+}
+
+.nft-details {
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.nft-title {
+  font-size: 1.75rem;
+  margin-bottom: var(--space-sm);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nft-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.nft-verification {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xl);
+}
+
+.nft-verification.verified {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.nft-verification.unverified {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--warning-color);
+  color: var(--warning-color);
+}
+
+.verification-icon {
+  font-size: 1rem;
+}
+
+.nft-chain-data {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  text-align: left;
+}
+
+.chain-data-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.chain-data-item:last-child {
+  border-bottom: none;
+}
+
+.chain-data-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.chain-data-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.chain-data-value.mono {
+  font-family: monospace;
+}
+
+.chain-data-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.chain-data-link:hover {
+  color: var(--accent-color);
+}
+
+.external-icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.network-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.nft-explorer-links {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== Minting Animation ===== */
+.minting-animation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-3xl);
+}
+
+.minting-spinner {
+  width: 80px;
+  height: 80px;
+  border: 4px solid var(--bg-glass);
+  border-top-color: var(--primary-color);
+  border-right-color: var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.minting-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.minting-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.minting-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.minting-step.active {
+  color: var(--primary-color);
+}
+
+.minting-step.completed {
+  color: var(--success-color);
+}
+
+/* ===== Success Confetti Effect ===== */
+.success-celebration {
+  position: relative;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--primary-color);
+  animation: confetti-fall 3s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(200px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Responsive NFT Display */
+@media (max-width: 768px) {
+  .nft-display-container {
+    padding: var(--space-lg);
+  }
+
+  .nft-badge-wrapper {
+    width: 220px;
+    height: 220px;
+  }
+
+  .nft-explorer-links {
+    flex-direction: column;
+  }
+
+  .nft-explorer-links .btn {
+    width: 100%;
+  }
+
+  .chain-data-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+}
