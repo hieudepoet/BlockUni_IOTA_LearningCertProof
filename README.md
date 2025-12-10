@@ -117,6 +117,7 @@ iota client publish --gas-budget 100000000
 | **Transaction** | [View TX](https://explorer.rebased.iota.org/txblock/7gU3zsZibCZ1CcoLRcjS8KV75Gm59TUxCW2Nz37yy32T?network=testnet) |
 
 ![Deployed Contract](public/explorer.png)
+![Deployed Contract](public/explorer2.png)
 
 ## 🎨 User Flow
 
