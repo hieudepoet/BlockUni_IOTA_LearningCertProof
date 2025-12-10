@@ -14,7 +14,7 @@ export const CourseLearning: React.FC = () => {
         completeModule,
         getCourseProgress,
         isCourseCompleted,
-        mintCertificate,
+        mintCertificateNFT,
         certificates,
         isLoading,
         mintingStep
@@ -59,9 +59,9 @@ export const CourseLearning: React.FC = () => {
         );
     }
 
-    const handleCompleteModule = (moduleIndex: number) => {
+    const handleCompleteModule = async (moduleIndex: number) => {
         if (!progress?.modulesCompleted[moduleIndex]) {
-            completeModule(courseId, moduleIndex);
+            await completeModule(courseId, moduleIndex);
         }
     };
 
@@ -72,7 +72,7 @@ export const CourseLearning: React.FC = () => {
         }
 
         try {
-            await mintCertificate(courseId, course.title, account.address);
+            await mintCertificateNFT(courseId, course.title);
         } catch (error) {
             console.error('Failed to mint certificate:', error);
         }

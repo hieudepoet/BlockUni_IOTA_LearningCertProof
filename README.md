@@ -98,6 +98,15 @@ iota move build
 iota client publish --gas-budget 100000000
 ```
 
+### ✅ Deployed Contract (Testnet)
+
+| Item | Value |
+|------|-------|
+| **Package ID** | `0x48c65c6023dc037a8433617843c62645a9f52b40d63fe0e6afca65e4ffa5dda9` |
+| **Transaction** | `EsW9mK7cjw2YMijxSiNfvFZujkn4FFGgn1tKtA3TKakS` |
+| **Network** | IOTA Testnet |
+| **Explorer** | [View on Explorer](https://explorer.rebased.iota.org/object/0x48c65c6023dc037a8433617843c62645a9f52b40d63fe0e6afca65e4ffa5dda9?network=testnet) |
+
 ## 🎨 User Flow
 
 1. **Connect Wallet**: Click "Connect Wallet" to connect your IOTA wallet

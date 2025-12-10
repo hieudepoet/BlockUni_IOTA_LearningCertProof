@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { useCurrentAccount } from '@iota/dapp-kit';
+import { useProofOfLearning } from '../hooks/useProofOfLearning';
+import type { MintResult } from '../hooks/useProofOfLearning';
+import { NFT_BADGE_IMAGE_URL } from '../config/contract';
 
 export interface LearningProgress {
     courseId: string;
@@ -6,6 +11,8 @@ export interface LearningProgress {
     startedAt: Date;
     completedAt?: Date;
     certificateId?: string;
+    // On-chain data
+    progressObjectId?: string;
 }
 
 export interface Certificate {
@@ -22,13 +29,16 @@ export interface Certificate {
 interface LearningContextType {
     progress: Record<string, LearningProgress>;
     certificates: Certificate[];
-    startCourse: (courseId: string) => void;
-    completeModule: (courseId: string, moduleIndex: number) => void;
+    startCourse: (courseId: string) => Promise<void>;
+    completeModule: (courseId: string, moduleIndex: number) => Promise<void>;
     isCourseCompleted: (courseId: string) => boolean;
     getCourseProgress: (courseId: string) => LearningProgress | undefined;
-    mintCertificate: (courseId: string, courseName: string, walletAddress?: string) => Promise<Certificate>;
+    mintCertificateNFT: (courseId: string, courseName: string) => Promise<Certificate | null>;
     isLoading: boolean;
     mintingStep: string;
+    error: string | null;
+    useBlockchain: boolean;
+    setUseBlockchain: (use: boolean) => void;
 }
 
 const LearningContext = createContext<LearningContextType | undefined>(undefined);
@@ -50,41 +60,129 @@ export const LearningProvider: React.FC<LearningProviderProps> = ({ children }) 
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [mintingStep, setMintingStep] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [useBlockchain, setUseBlockchain] = useState(true);
 
-    const startCourse = useCallback((courseId: string) => {
-        setProgress(prev => {
-            if (prev[courseId]) return prev;
-            return {
+    const account = useCurrentAccount();
+    const blockchain = useProofOfLearning();
+
+    // Load user's on-chain data when wallet connects
+    useEffect(() => {
+        if (account && useBlockchain) {
+            loadOnChainData();
+        }
+    }, [account, useBlockchain]);
+
+    const loadOnChainData = async () => {
+        try {
+            // Load certificates from blockchain
+            const onChainCerts = await blockchain.getUserCertificates();
+            if (onChainCerts.length > 0) {
+                const certs: Certificate[] = onChainCerts
+                    .filter((c): c is NonNullable<typeof c> => c !== null)
+                    .map(c => ({
+                        id: c.objectId,
+                        courseId: c.courseId,
+                        courseName: c.courseName,
+                        issuedAt: new Date(c.issuedAt * 1000), // epoch to date
+                        objectId: c.objectId,
+                        ownerAddress: account?.address,
+                    }));
+                setCertificates(certs);
+            }
+
+            // Load progress from blockchain
+            const onChainProgress = await blockchain.getUserProgress();
+            if (onChainProgress.length > 0) {
+                const progressMap: Record<string, LearningProgress> = {};
+                onChainProgress.forEach(p => {
+                    progressMap[p.courseId] = {
+                        courseId: p.courseId,
+                        modulesCompleted: p.modulesCompleted,
+                        startedAt: new Date(),
+                        progressObjectId: p.objectId,
+                        completedAt: p.modulesCompleted.every(Boolean) ? new Date() : undefined,
+                    };
+                });
+                setProgress(prev => ({ ...prev, ...progressMap }));
+            }
+        } catch (err) {
+            console.error('Failed to load on-chain data:', err);
+        }
+    };
+
+    const startCourse = useCallback(async (courseId: string) => {
+        if (progress[courseId]) return;
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            let progressObjectId: string | undefined;
+
+            if (useBlockchain && account) {
+                setMintingStep('Creating learning progress on-chain...');
+                const objectId = await blockchain.startLearning(courseId);
+                progressObjectId = objectId || undefined;
+            }
+
+            setProgress(prev => ({
                 ...prev,
                 [courseId]: {
                     courseId,
                     modulesCompleted: [false, false, false, false],
-                    startedAt: new Date()
+                    startedAt: new Date(),
+                    progressObjectId,
                 }
-            };
-        });
-    }, []);
+            }));
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to start course');
+        } finally {
+            setIsLoading(false);
+            setMintingStep('');
+        }
+    }, [progress, useBlockchain, account, blockchain]);
 
-    const completeModule = useCallback((courseId: string, moduleIndex: number) => {
-        setProgress(prev => {
-            const courseProgress = prev[courseId];
-            if (!courseProgress) return prev;
+    const completeModule = useCallback(async (courseId: string, moduleIndex: number) => {
+        const courseProgress = progress[courseId];
+        if (!courseProgress) return;
 
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            // If using blockchain and we have a progress object ID
+            if (useBlockchain && account && courseProgress.progressObjectId) {
+                setMintingStep(`Completing module ${moduleIndex + 1} on-chain...`);
+                const success = await blockchain.completeModule(
+                    courseProgress.progressObjectId,
+                    moduleIndex + 1 // Module IDs are 1-indexed in contract
+                );
+                if (!success) {
+                    throw new Error('Failed to complete module on blockchain');
+                }
+            }
+
+            // Update local state
             const newModulesCompleted = [...courseProgress.modulesCompleted];
             newModulesCompleted[moduleIndex] = true;
-
             const allCompleted = newModulesCompleted.every(Boolean);
 
-            return {
+            setProgress(prev => ({
                 ...prev,
                 [courseId]: {
                     ...courseProgress,
                     modulesCompleted: newModulesCompleted,
                     completedAt: allCompleted ? new Date() : undefined
                 }
-            };
-        });
-    }, []);
+            }));
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to complete module');
+        } finally {
+            setIsLoading(false);
+            setMintingStep('');
+        }
+    }, [progress, useBlockchain, account, blockchain]);
 
     const isCourseCompleted = useCallback((courseId: string): boolean => {
         const courseProgress = progress[courseId];
@@ -95,43 +193,65 @@ export const LearningProvider: React.FC<LearningProviderProps> = ({ children }) 
         return progress[courseId];
     }, [progress]);
 
-    const mintCertificate = useCallback(async (
+    const mintCertificateNFT = useCallback(async (
         courseId: string,
-        courseName: string,
-        walletAddress?: string
-    ): Promise<Certificate> => {
+        courseName: string
+    ): Promise<Certificate | null> => {
+        const courseProgress = progress[courseId];
+
         setIsLoading(true);
+        setError(null);
 
         try {
-            // Step 1: Preparing transaction
-            setMintingStep('Preparing transaction...');
-            await new Promise(resolve => setTimeout(resolve, 800));
+            let result: MintResult | null = null;
 
-            // Step 2: Signing with wallet
-            setMintingStep('Waiting for wallet signature...');
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (useBlockchain && account && courseProgress?.progressObjectId) {
+                // Real blockchain minting
+                setMintingStep('Preparing transaction...');
+                await new Promise(r => setTimeout(r, 500));
 
-            // Step 3: Broadcasting to network
-            setMintingStep('Broadcasting to IOTA network...');
-            await new Promise(resolve => setTimeout(resolve, 1200));
+                setMintingStep('Waiting for wallet signature...');
 
-            // Step 4: Confirming transaction
-            setMintingStep('Confirming transaction...');
-            await new Promise(resolve => setTimeout(resolve, 800));
+                result = await blockchain.mintCertificate(
+                    courseProgress.progressObjectId,
+                    courseName,
+                    NFT_BADGE_IMAGE_URL
+                );
 
-            // Generate mock but realistic-looking blockchain data
-            // In production, these would come from actual blockchain response
-            const mockTransactionDigest = generateMockDigest();
-            const mockObjectId = generateMockDigest();
+                if (!result) {
+                    throw new Error('Failed to mint certificate');
+                }
+
+                setMintingStep('Transaction confirmed!');
+            } else {
+                // Demo mode - simulate
+                setMintingStep('Preparing transaction...');
+                await new Promise(r => setTimeout(r, 800));
+
+                setMintingStep('Waiting for wallet signature...');
+                await new Promise(r => setTimeout(r, 1000));
+
+                setMintingStep('Broadcasting to IOTA network...');
+                await new Promise(r => setTimeout(r, 1200));
+
+                setMintingStep('Confirming transaction...');
+                await new Promise(r => setTimeout(r, 800));
+
+                result = {
+                    transactionDigest: generateMockDigest(),
+                    objectId: generateMockDigest(),
+                    ownerAddress: account?.address || '',
+                };
+            }
 
             const certificate: Certificate = {
-                id: `cert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                id: `cert-${Date.now()}`,
                 courseId,
                 courseName,
                 issuedAt: new Date(),
-                transactionDigest: mockTransactionDigest,
-                objectId: mockObjectId,
-                ownerAddress: walletAddress
+                transactionDigest: result.transactionDigest,
+                objectId: result.objectId,
+                ownerAddress: result.ownerAddress,
             };
 
             setCertificates(prev => [...prev, certificate]);
@@ -147,11 +267,14 @@ export const LearningProvider: React.FC<LearningProviderProps> = ({ children }) 
             setMintingStep('Certificate minted successfully!');
 
             return certificate;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to mint certificate');
+            return null;
         } finally {
             setIsLoading(false);
             setTimeout(() => setMintingStep(''), 2000);
         }
-    }, []);
+    }, [progress, useBlockchain, account, blockchain]);
 
     const value: LearningContextType = {
         progress,
@@ -160,9 +283,12 @@ export const LearningProvider: React.FC<LearningProviderProps> = ({ children }) 
         completeModule,
         isCourseCompleted,
         getCourseProgress,
-        mintCertificate,
+        mintCertificateNFT,
         isLoading,
-        mintingStep
+        mintingStep,
+        error,
+        useBlockchain,
+        setUseBlockchain,
     };
 
     return (
@@ -172,7 +298,7 @@ export const LearningProvider: React.FC<LearningProviderProps> = ({ children }) 
     );
 };
 
-// Helper function to generate mock IOTA-style digests
+// Helper function to generate mock IOTA-style digests for demo mode
 function generateMockDigest(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
