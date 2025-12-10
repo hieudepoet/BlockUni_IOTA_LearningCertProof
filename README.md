@@ -116,6 +116,8 @@ iota client publish --gas-budget 100000000
 | **Explorer** | [View Package](https://explorer.rebased.iota.org/object/0x4c4355fc7b5fce21c8d127e7978b1ce34d9f5eef36a20e58cee99e31fce8445b?network=testnet) |
 | **Transaction** | [View TX](https://explorer.rebased.iota.org/txblock/7gU3zsZibCZ1CcoLRcjS8KV75Gm59TUxCW2Nz37yy32T?network=testnet) |
 
+![Deployed Contract](./explorer.png)
+
 ## 🎨 User Flow
 
 1. **Connect Wallet**: Click "Connect Wallet" to connect your IOTA wallet
